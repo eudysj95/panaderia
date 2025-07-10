@@ -1,0 +1,12 @@
+[
+    {
+        "id": 0,
+        "producto": "Harina",
+        "precio": 0.9
+    },
+    {
+        "id": 1,
+        "producto": "Mantequilla",
+        "precio": 5
+    }
+]
