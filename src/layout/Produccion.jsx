@@ -42,7 +42,7 @@ export const Produccion = () => {
   return (
     <div className="w-full flex flex-col items-center text-white">
       <div className="w-full flex justify-between items-center mb-4">
-        <Link to="/inicio">
+        <Link to="/">
           <img
             src={back}
             alt="back"
@@ -54,7 +54,7 @@ export const Produccion = () => {
           <h1 className="text-2xl font-bold">Producción</h1>
         </div>
 
-        <button onClick={calcularCosto} name="costo">
+        <button onClick={calcularCosto} name="costo" type="button">
           Costo
         </button>
       </div>

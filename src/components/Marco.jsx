@@ -2,29 +2,13 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ListadoContext } from "../context/ListadoContext";
 import back from "../assets/icons/circle-back.svg";
+import { EXCHANGE_RATE } from "../config";
 
 // eslint-disable-next-line react/prop-types
 export function Marco({ title, metodo }) {
   const { data, loading, error } = useContext(ListadoContext);
   const [listado, setListado] = useState([]);
   const [busquedaState, setBusquedaState] = useState("");
-
-  const tasa = 175;
-
-  useEffect(() => {
-    if (!data) return;
-
-    const rawData = data[metodo];
-    if (!rawData) return;
-
-    const mapped = rawData.map((dato, index) => ({
-      ...dato,
-      id: index,
-      precio: parseFloat(dato.precio),
-    }));
-
-    setListado(mapped);
-  }, [data, metodo]);
 
   useEffect(() => {
     if (!data) return;
@@ -74,8 +58,8 @@ export function Marco({ title, metodo }) {
 
   return (
     <div className="flex flex-col items-center text-white">
-      <div className="w-full flex justify-around">
-        <Link to="/inicio">
+      <div className="w-full flex justify-between">
+        <Link to="/">
           <img
             src={back}
             alt="back"
@@ -92,10 +76,9 @@ export function Marco({ title, metodo }) {
             type="text"
             name="busqueda"
             placeholder="Busca un producto"
+            aria-label="Buscar productos"
           />
         </div>
-
-        <div></div>
       </div>
 
       <div className="flex flex-wrap mt-6 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-center">
@@ -116,7 +99,7 @@ export function Marco({ title, metodo }) {
                     {item.producto}
                   </h3>
                   <p className="mt-2">{precio.toFixed(3)} $</p>
-                  <p className="mt-2">{(precio * tasa).toFixed(3)} Bs</p>
+                  <p className="mt-2">{(precio * EXCHANGE_RATE).toFixed(3)} Bs</p>
                 </article>
               );
             } else {
@@ -129,7 +112,7 @@ export function Marco({ title, metodo }) {
                     {item.producto}
                   </h3>
                   <p className="mt-2">{item.precio.toFixed(3)} $</p>
-                  <p className="mt-2">{(item.precio * tasa).toFixed(3)} Bs</p>
+                  <p className="mt-2">{(item.precio * EXCHANGE_RATE).toFixed(3)} Bs</p>
                 </article>
               );
             }
