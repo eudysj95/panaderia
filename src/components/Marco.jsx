@@ -1,57 +1,76 @@
-import dataPanes from "../assets/dataPanes.json";
-import dataViveres from "../assets/dataViveres.json";
-import dataMayor from "../assets/dataMayor.json";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { ListadoContext } from "../context/ListadoContext";
 import back from "../assets/icons/circle-back.svg";
 
 // eslint-disable-next-line react/prop-types
 export function Marco({ title, metodo }) {
+  const { data, loading, error } = useContext(ListadoContext);
   const [listado, setListado] = useState([]);
   const [busquedaState, setBusquedaState] = useState("");
 
   const tasa = 175;
 
   useEffect(() => {
-    conseguirListado();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (!data) return;
 
-  const conseguirListado = async () => {
-    let data;
+    const rawData = data[metodo];
+    if (!rawData) return;
 
-    if (metodo === "viveres") {
-      data = dataViveres;
-    } else if (metodo === "panes") {
-      data = dataPanes;
-    } else if (metodo === "mayor") {
-      data = dataMayor;
+    const mapped = rawData.map((dato, index) => ({
+      ...dato,
+      id: index,
+      precio: parseFloat(dato.precio),
+    }));
+
+    setListado(mapped);
+  }, [data, metodo]);
+
+  useEffect(() => {
+    if (!data) return;
+
+    const rawData = data[metodo];
+    if (!rawData) return;
+
+    const mapped = rawData.map((dato, index) => ({
+      ...dato,
+      id: index,
+      precio: parseFloat(dato.precio),
+    }));
+
+    if (busquedaState.length === 0) {
+      setListado(mapped);
+      return;
     }
 
-    let objeto = await data.map((dato) => {
-      return {
-        ...dato,
-        id: data.indexOf(dato),
-        precio: parseFloat(dato.precio),
-      };
-    });
-
-    setListado(objeto);
-  };
-
-  const buscar = (e) => {
-    setBusquedaState(e.target.value);
-
-    let nuevoListado = listado.filter((item) =>
+    const filtered = mapped.filter((item) =>
       item.producto.toLowerCase().includes(busquedaState.toLowerCase())
     );
 
-    if (busquedaState.length < 2) {
-      conseguirListado();
-    } else {
-      setListado(nuevoListado);
-    }
+    setListado(filtered);
+  }, [busquedaState, data, metodo]);
+
+  const buscar = (e) => {
+    setBusquedaState(e.target.value);
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center text-white mt-20">
+        <p className="text-xl">Cargando...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center text-white mt-20">
+        <p className="text-xl text-red-400">
+          Error al cargar los datos. Intente de nuevo.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center text-white">
@@ -74,17 +93,20 @@ export function Marco({ title, metodo }) {
             name="busqueda"
             placeholder="Busca un producto"
           />
-          {/* <input className="border-solid border-2 mb-4 p-2 w-28" type="submit" value="Buscar"/> */}
         </div>
 
         <div></div>
       </div>
 
       <div className="flex flex-wrap mt-6 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-center">
-        {listado.map((item) => {
-          {
-            if (metodo == "viveres") {
-              let precio = (item.precio / item.unidades) * 1.2;
+        {listado.length === 0 ? (
+          <p className="text-white text-lg col-span-full text-center">
+            No se encontraron productos
+          </p>
+        ) : (
+          listado.map((item) => {
+            if (metodo === "viveres") {
+              const precio = (item.precio / item.unidades) * 1.2;
               return (
                 <article
                   key={item.id}
@@ -111,8 +133,8 @@ export function Marco({ title, metodo }) {
                 </article>
               );
             }
-          }
-        })}
+          })
+        )}
       </div>
     </div>
   );
