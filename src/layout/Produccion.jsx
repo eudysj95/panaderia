@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
+import { ListadoContext } from "../context/ListadoContext";
 import back from "../assets/icons/circle-back.svg";
 import materia from "../assets/dataMateriaPrima.json";
 
 export const Produccion = () => {
+  const { exchangeRate } = useContext(ListadoContext);
   const [ingredientes, setIngredientes] = useState({});
   const [costBreakdown, setCostBreakdown] = useState(null);
 
@@ -54,7 +56,7 @@ export const Produccion = () => {
           <h1 className="text-2xl font-bold">Producción</h1>
         </div>
 
-        <button onClick={calcularCosto} name="costo" type="button">
+        <button onClick={calcularCosto} name="costo" type="button" className="bg-white text-black px-4 py-2 rounded-md font-semibold hover:bg-gray-200 transition-colors">
           Costo
         </button>
       </div>
@@ -91,7 +93,8 @@ export const Produccion = () => {
               <tr className="border-b-2 border-gray-300">
                 <th className="text-left py-2">Ingrediente</th>
                 <th className="text-right py-2">Cantidad</th>
-                <th className="text-right py-2">Subtotal</th>
+                <th className="text-right py-2">USD</th>
+                <th className="text-right py-2">Bs</th>
               </tr>
             </thead>
             <tbody>
@@ -104,6 +107,9 @@ export const Produccion = () => {
                   <td className="text-right py-1">
                     ${item.subtotal.toFixed(2)}
                   </td>
+                  <td className="text-right py-1">
+                    Bs {(item.subtotal * exchangeRate).toFixed(2)}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -114,6 +120,9 @@ export const Produccion = () => {
                 </td>
                 <td className="text-right py-2">
                   ${costBreakdown.total.toFixed(2)}
+                </td>
+                <td className="text-right py-2">
+                  Bs {(costBreakdown.total * exchangeRate).toFixed(2)}
                 </td>
               </tr>
             </tfoot>
