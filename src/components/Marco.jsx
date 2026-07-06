@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 import { ListadoContext } from "../context/ListadoContext";
 import back from "../assets/icons/circle-back.svg";
 import { EXCHANGE_RATE } from "../config";
+import { ProductCard } from "./ProductCard";
 
-// eslint-disable-next-line react/prop-types
 export function Marco({ title, metodo }) {
   const { data, loading, error } = useContext(ListadoContext);
   const [listado, setListado] = useState([]);
@@ -16,9 +17,8 @@ export function Marco({ title, metodo }) {
     const rawData = data[metodo];
     if (!rawData) return;
 
-    const mapped = rawData.map((dato, index) => ({
+    const mapped = rawData.map((dato) => ({
       ...dato,
-      id: index,
       precio: parseFloat(dato.precio),
     }));
 
@@ -88,37 +88,26 @@ export function Marco({ title, metodo }) {
           </p>
         ) : (
           listado.map((item) => {
-            if (metodo === "viveres") {
-              const precio = (item.precio / item.unidades) * 1.2;
-              return (
-                <article
-                  key={item.id}
-                  className="w-44 h-28 text-veryDarkBlue mb-4 text-center border-2 shadow pt-1 rounded-2xl"
-                >
-                  <h3 className="mt-2 text-base font-medium">
-                    {item.producto}
-                  </h3>
-                  <p className="mt-2">{precio.toFixed(3)} $</p>
-                  <p className="mt-2">{(precio * EXCHANGE_RATE).toFixed(3)} Bs</p>
-                </article>
-              );
-            } else {
-              return (
-                <article
-                  key={item.id}
-                  className="w-44 h-28 text-veryDarkBlue mb-4 text-center border-2 shadow pt-1 rounded-2xl"
-                >
-                  <h3 className="mt-2 text-base font-medium">
-                    {item.producto}
-                  </h3>
-                  <p className="mt-2">{item.precio.toFixed(3)} $</p>
-                  <p className="mt-2">{(item.precio * EXCHANGE_RATE).toFixed(3)} Bs</p>
-                </article>
-              );
-            }
+            const precioUSD = metodo === "viveres"
+              ? (item.precio / item.unidades) * 1.2
+              : item.precio;
+
+            return (
+              <ProductCard
+                key={item.producto}
+                producto={item.producto}
+                precioUSD={precioUSD}
+                precioBS={precioUSD * EXCHANGE_RATE}
+              />
+            );
           })
         )}
       </div>
     </div>
   );
 }
+
+Marco.propTypes = {
+  title: PropTypes.string.isRequired,
+  metodo: PropTypes.string.isRequired,
+};
