@@ -7,6 +7,71 @@
     {
         "id": 1,
         "producto": "Mantequilla",
-        "precio": 5
+        "precio": 5.0
+    },
+    {
+        "id": 2,
+        "producto": "Azúcar",
+        "precio": 1.2
+    },
+    {
+        "id": 3,
+        "producto": "Huevos (docena)",
+        "precio": 3.5
+    },
+    {
+        "id": 4,
+        "producto": "Levadura",
+        "precio": 0.5
+    },
+    {
+        "id": 5,
+        "producto": "Sal",
+        "precio": 0.3
+    },
+    {
+        "id": 6,
+        "producto": "Leche (litro)",
+        "precio": 1.5
+    },
+    {
+        "id": 7,
+        "producto": "Aceite (litro)",
+        "precio": 2.0
+    },
+    {
+        "id": 8,
+        "producto": "Vainilla",
+        "precio": 4.0
+    },
+    {
+        "id": 9,
+        "producto": "Queso (kg)",
+        "precio": 6.0
+    },
+    {
+        "id": 10,
+        "producto": "Chocolate",
+        "precio": 5.5
+    },
+    {
+        "id": 11,
+        "producto": "Arequipe",
+        "precio": 3.0
+    },
+    {
+        "id": 12,
+        "producto": "Mermelada de Guayaba",
+        "precio": 3.5
+    },
+    {
+        "id": 13,
+        "producto": "Maizena",
+        "precio": 1.0
+    },
+    {
+        "id": 14,
+        "producto": "Polvo de hornear",
+        "precio": 0.4
     }
 ]
