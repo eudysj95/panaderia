@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-import React from 'react';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import { Inicio } from '../layout/Inicio';
 import { PrecioViveres } from '../layout/PrecioViveres';
@@ -13,7 +11,6 @@ export const MyRoutes = () => {
         <BrowserRouter>
             <Routes>
                 <Route path='/' element={<Inicio/>}/>
-                <Route path='/inicio' element={<Inicio/>}/>
                 <Route path='/viveres' element={<PrecioViveres/>}/>
                 <Route path='/panaderia' element={<PrecioPanaderia/>}/>
                 <Route path='/mayor' element={<PreciosMayor/>}/>

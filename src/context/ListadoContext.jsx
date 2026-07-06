@@ -13,9 +13,6 @@ export function ListadoProvider({ children }) {
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Simulate async loading to demonstrate loading state
-        await new Promise((resolve) => setTimeout(resolve, 300));
-
         setData({
           panes: dataPanes,
           viveres: dataViveres,
