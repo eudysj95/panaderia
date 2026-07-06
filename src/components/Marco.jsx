@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 import { ListadoContext } from "../context/ListadoContext";
 import back from "../assets/icons/circle-back.svg";
-import { EXCHANGE_RATE } from "../config";
+import { ProductCard } from "./ProductCard";
 
-// eslint-disable-next-line react/prop-types
 export function Marco({ title, metodo }) {
-  const { data, loading, error } = useContext(ListadoContext);
+  const { data, loading, error, exchangeRate, updateExchangeRate } =
+    useContext(ListadoContext);
   const [listado, setListado] = useState([]);
   const [busquedaState, setBusquedaState] = useState("");
 
@@ -16,9 +17,8 @@ export function Marco({ title, metodo }) {
     const rawData = data[metodo];
     if (!rawData) return;
 
-    const mapped = rawData.map((dato, index) => ({
+    const mapped = rawData.map((dato) => ({
       ...dato,
-      id: index,
       precio: parseFloat(dato.precio),
     }));
 
@@ -38,27 +38,9 @@ export function Marco({ title, metodo }) {
     setBusquedaState(e.target.value);
   };
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center text-white mt-20">
-        <p className="text-xl">Cargando...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex flex-col items-center text-white mt-20">
-        <p className="text-xl text-red-400">
-          Error al cargar los datos. Intente de nuevo.
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col items-center text-white">
-      <div className="w-full flex justify-between">
+      <div className="w-full flex justify-between items-start">
         <Link to="/">
           <img
             src={back}
@@ -70,14 +52,30 @@ export function Marco({ title, metodo }) {
         <div className="flex flex-col items-center">
           <h1 className="text-2xl font-bold mb-4">{title}</h1>
 
-          <input
-            onChange={buscar}
-            className="text-black ring-2 w-40 p-2 rounded-sm mb-4"
-            type="text"
-            name="busqueda"
-            placeholder="Busca un producto"
-            aria-label="Buscar productos"
-          />
+          <div className="flex items-center gap-2">
+            <input
+              onChange={buscar}
+              className="text-black ring-2 w-40 p-2 rounded-sm"
+              type="text"
+              name="busqueda"
+              placeholder="Busca un producto"
+              aria-label="Buscar productos"
+            />
+
+            <div className="flex items-center gap-1 text-sm">
+              <span className="text-gray-300">Tasa:</span>
+              <input
+                type="number"
+                step="1"
+                min="1"
+                value={exchangeRate}
+                onChange={(e) => updateExchangeRate(e.target.value)}
+                className="w-20 text-black p-1 rounded-sm text-center"
+                aria-label="Tasa de cambio Bs/USD"
+              />
+              <span className="text-gray-300">Bs/USD</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -88,37 +86,26 @@ export function Marco({ title, metodo }) {
           </p>
         ) : (
           listado.map((item) => {
-            if (metodo === "viveres") {
-              const precio = (item.precio / item.unidades) * 1.2;
-              return (
-                <article
-                  key={item.id}
-                  className="w-44 h-28 text-veryDarkBlue mb-4 text-center border-2 shadow pt-1 rounded-2xl"
-                >
-                  <h3 className="mt-2 text-base font-medium">
-                    {item.producto}
-                  </h3>
-                  <p className="mt-2">{precio.toFixed(3)} $</p>
-                  <p className="mt-2">{(precio * EXCHANGE_RATE).toFixed(3)} Bs</p>
-                </article>
-              );
-            } else {
-              return (
-                <article
-                  key={item.id}
-                  className="w-44 h-28 text-veryDarkBlue mb-4 text-center border-2 shadow pt-1 rounded-2xl"
-                >
-                  <h3 className="mt-2 text-base font-medium">
-                    {item.producto}
-                  </h3>
-                  <p className="mt-2">{item.precio.toFixed(3)} $</p>
-                  <p className="mt-2">{(item.precio * EXCHANGE_RATE).toFixed(3)} Bs</p>
-                </article>
-              );
-            }
+            const precioUSD = metodo === "viveres"
+              ? (item.precio / item.unidades) * 1.2
+              : item.precio;
+
+            return (
+              <ProductCard
+                key={item.producto}
+                producto={item.producto}
+                precioUSD={precioUSD}
+                precioBS={precioUSD * exchangeRate}
+              />
+            );
           })
         )}
       </div>
     </div>
   );
 }
+
+Marco.propTypes = {
+  title: PropTypes.string.isRequired,
+  metodo: PropTypes.string.isRequired,
+};
