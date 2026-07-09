@@ -2,14 +2,32 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { ListadoContext } from "../context/ListadoContext";
+import { API_BASE_URL } from "../config";
 import back from "../assets/icons/circle-back.svg";
 import { ProductCard } from "./ProductCard";
+import { ProductModal } from "./ProductModal";
+import { ConfirmDialog } from "./ConfirmDialog";
 
 export function Marco({ title, metodo }) {
-  const { data, loading, error, exchangeRate, updateExchangeRate } =
-    useContext(ListadoContext);
+  const {
+    data,
+    loading,
+    error,
+    exchangeRate,
+    updateExchangeRate,
+    apiKey,
+    setApiKey,
+    ensureApiKey,
+    refreshData,
+  } = useContext(ListadoContext);
   const [listado, setListado] = useState([]);
   const [busquedaState, setBusquedaState] = useState("");
+
+  // Modal state
+  const [showModal, setShowModal] = useState(false);
+  const [editItem, setEditItem] = useState(null);
+  const [deleteItem, setDeleteItem] = useState(null);
+  const [mutationError, setMutationError] = useState(null);
 
   useEffect(() => {
     if (!data) return;
@@ -36,6 +54,96 @@ export function Marco({ title, metodo }) {
 
   const buscar = (e) => {
     setBusquedaState(e.target.value);
+  };
+
+  const mutationFetch = async (url, options) => {
+    const key = ensureApiKey();
+    if (!key) throw new Error("API key requerida");
+
+    const res = await fetch(url, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": key,
+        ...options.headers,
+      },
+    });
+
+    if (res.status === 401) {
+      setApiKey("");
+      throw new Error("Clave API inválida. Intente de nuevo.");
+    }
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new Error(`Error ${res.status}: ${text || res.statusText}`);
+    }
+
+    return res.json();
+  };
+
+  const handleAdd = async (payload) => {
+    setMutationError(null);
+    try {
+      await mutationFetch(`${API_BASE_URL}/products`, {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+      setShowModal(false);
+      refreshData();
+    } catch (err) {
+      setMutationError(err.message);
+    }
+  };
+
+  const handleEdit = async (payload) => {
+    setMutationError(null);
+    try {
+      await mutationFetch(`${API_BASE_URL}/products/${editItem._id}`, {
+        method: "PUT",
+        body: JSON.stringify(payload),
+      });
+      setShowModal(false);
+      setEditItem(null);
+      refreshData();
+    } catch (err) {
+      setMutationError(err.message);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!deleteItem) return;
+    setMutationError(null);
+    try {
+      await mutationFetch(`${API_BASE_URL}/products/${deleteItem._id}`, {
+        method: "DELETE",
+      });
+      setDeleteItem(null);
+      refreshData();
+    } catch (err) {
+      setMutationError(err.message);
+      setDeleteItem(null);
+    }
+  };
+
+  const openAdd = () => {
+    setEditItem(null);
+    setMutationError(null);
+    setShowModal(true);
+  };
+
+  const openEdit = (id) => {
+    const item = listado.find((p) => p._id === id);
+    if (item) {
+      setEditItem(item);
+      setMutationError(null);
+      setShowModal(true);
+    }
+  };
+
+  const openDelete = (id) => {
+    const item = listado.find((p) => p._id === id);
+    if (item) setDeleteItem(item);
   };
 
   if (loading) {
@@ -115,6 +223,14 @@ export function Marco({ title, metodo }) {
               />
               <span className="text-gray-300">Bs/USD</span>
             </div>
+
+            <button
+              onClick={openAdd}
+              className="text-sm px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700 transition-colors whitespace-nowrap"
+              type="button"
+            >
+              + Agregar
+            </button>
           </div>
         </div>
       </div>
@@ -134,14 +250,54 @@ export function Marco({ title, metodo }) {
             return (
               <ProductCard
                 key={item._id}
+                _id={item._id}
                 producto={item.producto}
                 precioUSD={precioUSD}
                 precioBS={precioUSD * exchangeRate}
+                onEdit={openEdit}
+                onDelete={openDelete}
               />
             );
           })
         )}
       </div>
+
+      <ProductModal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false);
+          setEditItem(null);
+          setMutationError(null);
+        }}
+        onSave={editItem ? handleEdit : handleAdd}
+        initialData={editItem}
+        categories={["panes", "viveres", "mayor"]}
+      />
+
+      {mutationError && (
+        <div className="fixed bottom-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg z-50">
+          {mutationError}
+          <button
+            onClick={() => setMutationError(null)}
+            className="ml-3 text-white font-bold"
+            type="button"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
+      <ConfirmDialog
+        isOpen={!!deleteItem}
+        onClose={() => setDeleteItem(null)}
+        onConfirm={handleDelete}
+        title="Eliminar Producto"
+        message={
+          deleteItem
+            ? `¿Estás seguro de eliminar "${deleteItem.producto}"?`
+            : ""
+        }
+      />
     </div>
   );
 }
