@@ -2,10 +2,10 @@ import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { ListadoContext } from "../context/ListadoContext";
 import back from "../assets/icons/circle-back.svg";
-import materia from "../assets/dataMateriaPrima.json";
 
 export const Produccion = () => {
-  const { exchangeRate } = useContext(ListadoContext);
+  const { materials, exchangeRate, loading, error } =
+    useContext(ListadoContext);
   const [ingredientes, setIngredientes] = useState({});
   const [costBreakdown, setCostBreakdown] = useState(null);
 
@@ -16,13 +16,59 @@ export const Produccion = () => {
     }));
   };
 
+  if (loading) {
+    return (
+      <div className="w-full flex flex-col items-center text-white">
+        <div className="w-full flex justify-between items-center mb-4">
+          <Link to="/">
+            <img
+              src={back}
+              alt="back"
+              className="w-12 bg-white rounded-[50%] mt-4"
+            />
+          </Link>
+          <div className="flex flex-col items-center">
+            <h1 className="text-2xl font-bold">Producción</h1>
+          </div>
+          <div className="w-12" />
+        </div>
+        <p className="text-lg text-gray-300 mt-16">
+          Cargando materiales...
+        </p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full flex flex-col items-center text-white">
+        <div className="w-full flex justify-between items-center mb-4">
+          <Link to="/">
+            <img
+              src={back}
+              alt="back"
+              className="w-12 bg-white rounded-[50%] mt-4"
+            />
+          </Link>
+          <div className="flex flex-col items-center">
+            <h1 className="text-2xl font-bold">Producción</h1>
+          </div>
+          <div className="w-12" />
+        </div>
+        <p className="text-lg text-red-400 mt-16">
+          Error al cargar materiales: {error}
+        </p>
+      </div>
+    );
+  }
+
   const calcularCosto = () => {
     const breakdown = [];
     let total = 0;
 
-    for (let i = 0; i < materia.length; i++) {
-      const item = materia[i];
-      const weight = parseFloat(ingredientes[i]) || 0;
+    for (let i = 0; i < materials.length; i++) {
+      const item = materials[i];
+      const weight = parseFloat(ingredientes[item.id]) || 0;
 
       let subtotal = 0;
       if (weight > 0) {
@@ -31,7 +77,7 @@ export const Produccion = () => {
 
       total += subtotal;
       breakdown.push({
-        id: i,
+        id: item.id,
         name: item.producto,
         weight: weight,
         subtotal: subtotal,
@@ -56,31 +102,46 @@ export const Produccion = () => {
           <h1 className="text-2xl font-bold">Producción</h1>
         </div>
 
-        <button onClick={calcularCosto} name="costo" type="button" className="bg-white text-black px-4 py-2 rounded-md font-semibold hover:bg-gray-200 transition-colors">
+        <button
+          onClick={calcularCosto}
+          name="costo"
+          type="button"
+          className="bg-white text-black px-4 py-2 rounded-md font-semibold hover:bg-gray-200 transition-colors"
+        >
           Costo
         </button>
       </div>
 
       <div className="flex flex-wrap justify-center gap-4 mb-6">
-        {materia.map((item) => {
-          return (
-            <article
-              key={item.id}
-              className="w-44 h-28 text-veryDarkBlue mb-4 text-center border-2 shadow pt-1 rounded-2xl"
-            >
-              <h3 className="mt-2 text-base font-medium">{item.producto}</h3>
-              <p className="mt-2">{item.precio.toFixed(2)} $</p>
-              <input
-                className="w-20 rounded-md text-black"
-                type="number"
-                step="0.01"
-                name={item.producto}
-                value={ingredientes[item.id] ?? ""}
-                onChange={(e) => handleInputChange(e, item.id)}
-              />
-            </article>
-          );
-        })}
+        {materials.length === 0 ? (
+          <p className="text-white text-lg col-span-full text-center">
+            No hay materiales disponibles
+          </p>
+        ) : (
+          materials.map((item) => {
+            return (
+              <article
+                key={item.id}
+                className="w-44 min-h-[9rem] text-veryDarkBlue mb-4 text-center border-2 shadow pt-1 rounded-2xl flex flex-col justify-between"
+              >
+                <div>
+                  <h3 className="mt-2 text-base font-medium">
+                    {item.producto}
+                  </h3>
+                  <p className="mt-2">{item.precio.toFixed(2)} $</p>
+                  <input
+                    className="w-20 rounded-md text-black mt-1"
+                    type="number"
+                    step="0.01"
+                    name={item.producto}
+                    value={ingredientes[item.id] ?? ""}
+                    onChange={(e) => handleInputChange(e, item.id)}
+                  />
+                </div>
+              </article>
+            );
+          })
+        )}
       </div>
 
       {costBreakdown && (
@@ -102,7 +163,7 @@ export const Produccion = () => {
                 <tr key={item.id} className="border-b border-gray-200">
                   <td className="py-1">{item.name}</td>
                   <td className="text-right py-1">
-                    {item.weight > 0 ? item.weight.toFixed(2) : "—"}
+                    {item.weight > 0 ? item.weight.toFixed(2) : "\u2014"}
                   </td>
                   <td className="text-right py-1">
                     ${item.subtotal.toFixed(2)}

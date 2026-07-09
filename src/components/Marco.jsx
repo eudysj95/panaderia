@@ -38,6 +38,46 @@ export function Marco({ title, metodo }) {
     setBusquedaState(e.target.value);
   };
 
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center text-white">
+        <div className="w-full flex justify-between items-start">
+          <Link to="/">
+            <img
+              src={back}
+              alt="back"
+              className="w-12 bg-white rounded-[50%] mt-4"
+            />
+          </Link>
+        </div>
+        <div className="flex items-center justify-center mt-16">
+          <p className="text-lg text-gray-300">Cargando productos...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center text-white">
+        <div className="w-full flex justify-between items-start">
+          <Link to="/">
+            <img
+              src={back}
+              alt="back"
+              className="w-12 bg-white rounded-[50%] mt-4"
+            />
+          </Link>
+        </div>
+        <div className="flex items-center justify-center mt-16">
+          <p className="text-lg text-red-400">
+            Error al cargar productos: {error}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center text-white">
       <div className="w-full flex justify-between items-start">
@@ -86,13 +126,14 @@ export function Marco({ title, metodo }) {
           </p>
         ) : (
           listado.map((item) => {
-            const precioUSD = metodo === "viveres"
-              ? (item.precio / item.unidades) * 1.2
-              : item.precio;
+            const precioUSD =
+              metodo === "viveres"
+                ? (item.precio / item.unidades) * 1.2
+                : item.precio;
 
             return (
               <ProductCard
-                key={item.producto}
+                key={item._id}
                 producto={item.producto}
                 precioUSD={precioUSD}
                 precioBS={precioUSD * exchangeRate}
