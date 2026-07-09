@@ -1,7 +1,8 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useCallback } from "react";
 import { API_BASE_URL } from "../config";
 
 const STORAGE_KEY = "panaderia-exchange-rate";
+const API_KEY_STORAGE = "panaderia-api-key";
 
 function getInitialRate() {
   try {
@@ -16,6 +17,14 @@ function getInitialRate() {
   return 175;
 }
 
+function getStoredApiKey() {
+  try {
+    return localStorage.getItem(API_KEY_STORAGE) || "";
+  } catch {
+    return "";
+  }
+}
+
 export const ListadoContext = createContext(null);
 
 export function ListadoProvider({ children }) {
@@ -24,6 +33,84 @@ export function ListadoProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [exchangeRate, setExchangeRate] = useState(getInitialRate);
+  const [apiKey, setApiKeyState] = useState(getStoredApiKey);
+
+  const setApiKey = useCallback((key) => {
+    setApiKeyState(key);
+    try {
+      if (key) {
+        localStorage.setItem(API_KEY_STORAGE, key);
+      } else {
+        localStorage.removeItem(API_KEY_STORAGE);
+      }
+    } catch {
+      // localStorage unavailable
+    }
+  }, []);
+
+  const ensureApiKey = useCallback(() => {
+    if (apiKey) return apiKey;
+    const key = window.prompt("Ingrese la clave API:");
+    if (key) {
+      setApiKey(key);
+      return key;
+    }
+    return null;
+  }, [apiKey, setApiKey]);
+
+  // Core fetch logic shared by initial load and refresh
+  const doFetch = useCallback(async () => {
+    const categories = ["panes", "viveres", "mayor"];
+    const urls = [
+      `${API_BASE_URL}/products?category=panes`,
+      `${API_BASE_URL}/products?category=viveres`,
+      `${API_BASE_URL}/products?category=mayor`,
+      `${API_BASE_URL}/materials`,
+      `${API_BASE_URL}/config/exchange-rate`,
+    ];
+
+    const responses = await Promise.all(urls.map((u) => fetch(u)));
+
+    for (const res of responses) {
+      if (!res.ok) {
+        throw new Error(`API error: ${res.status} ${res.statusText}`);
+      }
+    }
+
+    const [panes, viveres, mayor, materialsData, configData] =
+      await Promise.all(responses.map((r) => r.json()));
+
+    // Map server fields (nombre, _id) to frontend expectations (producto)
+    const mapProduct = (p) => ({
+      ...p,
+      producto: p.nombre,
+    });
+
+    setData({
+      panes: panes.map(mapProduct),
+      viveres: viveres.map(mapProduct),
+      mayor: mayor.map(mapProduct),
+    });
+
+    // Map materials: producto alias, id alias from _id
+    setMaterials(
+      materialsData.map((m) => ({
+        ...m,
+        producto: m.nombre,
+        id: m._id,
+      }))
+    );
+
+    // Sync exchange rate from server
+    if (configData && typeof configData.rate === "number") {
+      setExchangeRate(configData.rate);
+      try {
+        localStorage.setItem(STORAGE_KEY, configData.rate.toString());
+      } catch {
+        // localStorage unavailable
+      }
+    }
+  }, []);
 
   // Fetch all data on mount with unmount protection
   useEffect(() => {
@@ -34,57 +121,7 @@ export function ListadoProvider({ children }) {
       setError(null);
 
       try {
-        const categories = ["panes", "viveres", "mayor"];
-        const urls = [
-          `${API_BASE_URL}/products?category=panes`,
-          `${API_BASE_URL}/products?category=viveres`,
-          `${API_BASE_URL}/products?category=mayor`,
-          `${API_BASE_URL}/materials`,
-          `${API_BASE_URL}/config/exchange-rate`,
-        ];
-
-        const responses = await Promise.all(urls.map((u) => fetch(u)));
-
-        for (const res of responses) {
-          if (!res.ok) {
-            throw new Error(`API error: ${res.status} ${res.statusText}`);
-          }
-        }
-
-        const [panes, viveres, mayor, materialsData, configData] =
-          await Promise.all(responses.map((r) => r.json()));
-
-        // Map server fields (nombre, _id) to frontend expectations (producto)
-        const mapProduct = (p) => ({
-          ...p,
-          producto: p.nombre,
-        });
-
-        if (!cancelled) {
-          setData({
-            panes: panes.map(mapProduct),
-            viveres: viveres.map(mapProduct),
-            mayor: mayor.map(mapProduct),
-          });
-
-          setMaterials(
-            materialsData.map((m) => ({
-              ...m,
-              producto: m.nombre,
-              id: m._id,
-            }))
-          );
-
-          // Sync exchange rate from server
-          if (configData && typeof configData.rate === "number") {
-            setExchangeRate(configData.rate);
-            try {
-              localStorage.setItem(STORAGE_KEY, configData.rate.toString());
-            } catch {
-              // localStorage unavailable
-            }
-          }
-        }
+        await doFetch();
       } catch (err) {
         if (!cancelled) {
           setError(err.message);
@@ -101,7 +138,17 @@ export function ListadoProvider({ children }) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [doFetch]);
+
+  // Refresh data on demand (no unmount protection — caller expects results)
+  const refreshData = useCallback(async () => {
+    setError(null);
+    try {
+      await doFetch();
+    } catch (err) {
+      setError(err.message);
+    }
+  }, [doFetch]);
 
   const updateExchangeRate = (rate) => {
     const value = parseFloat(rate);
@@ -114,6 +161,15 @@ export function ListadoProvider({ children }) {
     } catch {
       // localStorage unavailable
     }
+
+    // Best-effort server sync (may fail if no API key — that's OK)
+    fetch(`${API_BASE_URL}/config/exchange-rate`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ rate: value }),
+    }).catch(() => {
+      // Silent fail — local update still applies
+    });
   };
 
   return (
@@ -125,6 +181,10 @@ export function ListadoProvider({ children }) {
         error,
         exchangeRate,
         updateExchangeRate,
+        apiKey,
+        setApiKey,
+        ensureApiKey,
+        refreshData,
       }}
     >
       {children}
