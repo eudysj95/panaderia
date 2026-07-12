@@ -64,7 +64,7 @@ export function ListadoProvider({ children }) {
     const urls = [
       `${API_BASE_URL}/products?category=panes`,
       `${API_BASE_URL}/products?category=viveres`,
-      `${API_BASE_URL}/products?category=mayor`,
+      `${API_BASE_URL}/products?category=panes`,
       `${API_BASE_URL}/materials`,
       `${API_BASE_URL}/config/exchange-rate`,
     ];

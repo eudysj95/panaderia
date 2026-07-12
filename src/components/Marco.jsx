@@ -8,7 +8,7 @@ import { ProductCard } from "./ProductCard";
 import { ProductModal } from "./ProductModal";
 import { ConfirmDialog } from "./ConfirmDialog";
 
-export function Marco({ title, metodo }) {
+export function Marco({ title, metodo, discount = 0 }) {
   const {
     data,
     loading,
@@ -242,10 +242,16 @@ export function Marco({ title, metodo }) {
           </p>
         ) : (
           listado.map((item) => {
-            const precioUSD =
+            const basePrice =
               metodo === "viveres"
                 ? (item.precio / item.unidades) * 1.2
                 : item.precio;
+            const precioUSD =
+              metodo === "mayor"
+                ? basePrice * (1 - discount / 100)
+                : basePrice;
+            const originalUSD =
+              metodo === "mayor" ? basePrice : null;
 
             return (
               <ProductCard
@@ -254,6 +260,8 @@ export function Marco({ title, metodo }) {
                 producto={item.producto}
                 precioUSD={precioUSD}
                 precioBS={precioUSD * exchangeRate}
+                originalUSD={originalUSD}
+                originalBS={originalUSD != null ? originalUSD * exchangeRate : null}
                 onEdit={openEdit}
                 onDelete={openDelete}
               />
@@ -271,7 +279,7 @@ export function Marco({ title, metodo }) {
         }}
         onSave={editItem ? handleEdit : handleAdd}
         initialData={editItem}
-        categories={["panes", "viveres", "mayor"]}
+        categories={metodo === "mayor" ? ["panes"] : ["panes", "viveres", "mayor"]}
       />
 
       {mutationError && (
@@ -305,4 +313,5 @@ export function Marco({ title, metodo }) {
 Marco.propTypes = {
   title: PropTypes.string.isRequired,
   metodo: PropTypes.string.isRequired,
+  discount: PropTypes.number,
 };
