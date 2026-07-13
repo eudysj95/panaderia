@@ -130,7 +130,7 @@ export const Produccion = () => {
             <img
               src={back}
               alt="back"
-              className="w-12 bg-white rounded-[50%] mt-4"
+              className="w-12 rounded-[50%] mt-4 opacity-70 hover:opacity-100 transition-opacity"
             />
           </Link>
           <div className="flex flex-col items-center">
@@ -138,7 +138,7 @@ export const Produccion = () => {
           </div>
           <div className="w-12" />
         </div>
-        <p className="text-lg text-gray-300 mt-16">
+        <p className="text-lg text-muted mt-16">
           Cargando materiales...
         </p>
       </div>
@@ -153,7 +153,7 @@ export const Produccion = () => {
             <img
               src={back}
               alt="back"
-              className="w-12 bg-white rounded-[50%] mt-4"
+              className="w-12 rounded-[50%] mt-4 opacity-70 hover:opacity-100 transition-opacity"
             />
           </Link>
           <div className="flex flex-col items-center">
@@ -161,7 +161,7 @@ export const Produccion = () => {
           </div>
           <div className="w-12" />
         </div>
-        <p className="text-lg text-red-400 mt-16">
+        <p className="text-lg text-danger mt-16">
           Error al cargar materiales: {error}
         </p>
       </div>
@@ -200,7 +200,7 @@ export const Produccion = () => {
           <img
             src={back}
             alt="back"
-            className="w-12 bg-white rounded-[50%] mt-4"
+            className="w-12 rounded-[50%] mt-4 opacity-70 hover:opacity-100 transition-opacity"
           />
         </Link>
 
@@ -212,7 +212,7 @@ export const Produccion = () => {
           <button
             onClick={openAdd}
             type="button"
-            className="bg-green-600 text-white px-3 py-2 rounded-md text-sm font-semibold hover:bg-green-700 transition-colors"
+            className="bg-accent text-white px-3 py-2 rounded-md text-sm font-semibold hover:bg-accent/80 transition-colors min-h-[44px]"
           >
             + Material
           </button>
@@ -220,14 +220,14 @@ export const Produccion = () => {
             onClick={calcularCosto}
             name="costo"
             type="button"
-            className="bg-white text-black px-4 py-2 rounded-md font-semibold hover:bg-gray-200 transition-colors"
+            className="bg-dark-border text-white px-4 py-2 rounded-md font-semibold hover:bg-dark-border/80 transition-colors min-h-[44px]"
           >
             Costo
           </button>
         </div>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-4 mb-6">
+      <div className="flex flex-wrap justify-center gap-4 mb-6 px-2">
         {materials.length === 0 ? (
           <p className="text-white text-lg col-span-full text-center">
             No hay materiales disponibles
@@ -237,7 +237,7 @@ export const Produccion = () => {
             return (
               <article
                 key={item.id}
-                className="w-44 min-h-[9rem] text-veryDarkBlue mb-4 text-center border-2 shadow pt-1 rounded-2xl flex flex-col justify-between"
+                className="w-full sm:w-44 min-h-[9rem] text-white mb-4 text-center border border-dark-border bg-dark-surface rounded-2xl flex flex-col justify-between"
               >
                 <div>
                   <h3 className="mt-2 text-base font-medium">
@@ -245,7 +245,7 @@ export const Produccion = () => {
                   </h3>
                   <p className="mt-2">{item.precio.toFixed(2)} $</p>
                   <input
-                    className="w-20 rounded-md text-black mt-1"
+                    className="w-20 rounded-md text-white bg-dark-bg border border-dark-border mt-1 px-1 py-0.5 focus:outline-none focus:border-accent transition-colors"
                     type="number"
                     step="0.01"
                     name={item.producto}
@@ -256,7 +256,7 @@ export const Produccion = () => {
                 <div className="flex justify-center gap-2 pb-2 mt-1">
                   <button
                     onClick={() => openEdit(item._id)}
-                    className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors"
+                    className="text-xs px-2 py-1 rounded bg-dark-border text-white hover:bg-dark-border/80 transition-colors min-h-[44px]"
                     type="button"
                     aria-label={`Editar ${item.producto}`}
                   >
@@ -264,7 +264,7 @@ export const Produccion = () => {
                   </button>
                   <button
                     onClick={() => openDelete(item._id)}
-                    className="text-xs px-2 py-1 rounded bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
+                    className="text-xs px-2 py-1 rounded bg-danger/20 text-danger hover:bg-danger/30 transition-colors min-h-[44px]"
                     type="button"
                     aria-label={`Eliminar ${item.producto}`}
                   >
@@ -278,22 +278,22 @@ export const Produccion = () => {
       </div>
 
       {costBreakdown && (
-        <div className="w-full max-w-lg bg-white text-black rounded-lg p-4 mb-6">
+        <div className="w-full max-w-lg bg-dark-surface text-white rounded-lg p-4 mb-6 border border-dark-border">
           <h2 className="text-xl font-bold mb-3 text-center">
             Desglose de Costos
           </h2>
           <table className="w-full border-collapse">
             <thead>
-              <tr className="border-b-2 border-gray-300">
-                <th className="text-left py-2">Ingrediente</th>
-                <th className="text-right py-2">Cantidad</th>
-                <th className="text-right py-2">USD</th>
-                <th className="text-right py-2">Bs</th>
+              <tr className="border-b-2 border-dark-border">
+                <th className="text-left py-2 text-muted">Ingrediente</th>
+                <th className="text-right py-2 text-muted">Cantidad</th>
+                <th className="text-right py-2 text-muted">USD</th>
+                <th className="text-right py-2 text-muted">Bs</th>
               </tr>
             </thead>
             <tbody>
               {costBreakdown.breakdown.map((item) => (
-                <tr key={item.id} className="border-b border-gray-200">
+                <tr key={item.id} className="border-b border-dark-border">
                   <td className="py-1">{item.name}</td>
                   <td className="text-right py-1">
                     {item.weight > 0 ? item.weight.toFixed(2) : "—"}
@@ -301,21 +301,21 @@ export const Produccion = () => {
                   <td className="text-right py-1">
                     ${item.subtotal.toFixed(2)}
                   </td>
-                  <td className="text-right py-1">
+                  <td className="text-right py-1 text-accent">
                     Bs {(item.subtotal * exchangeRate).toFixed(2)}
                   </td>
                 </tr>
               ))}
             </tbody>
             <tfoot>
-              <tr className="font-bold border-t-2 border-gray-300">
+              <tr className="font-bold border-t-2 border-dark-border">
                 <td className="py-2" colSpan={2}>
                   Total
                 </td>
                 <td className="text-right py-2">
                   ${costBreakdown.total.toFixed(2)}
                 </td>
-                <td className="text-right py-2">
+                <td className="text-right py-2 text-accent">
                   Bs {(costBreakdown.total * exchangeRate).toFixed(2)}
                 </td>
               </tr>
@@ -336,7 +336,7 @@ export const Produccion = () => {
       />
 
       {mutationError && (
-        <div className="fixed bottom-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg z-50">
+        <div className="fixed bottom-4 right-4 bg-danger text-white px-4 py-2 rounded-lg shadow-lg z-50">
           {mutationError}
           <button
             onClick={() => setMutationError(null)}

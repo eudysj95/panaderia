@@ -153,12 +153,12 @@ export function Marco({ title, metodo, discount = 0 }) {
             <img
               src={back}
               alt="back"
-              className="w-12 bg-white rounded-[50%] mt-4"
+              className="w-12 rounded-[50%] mt-4 opacity-70 hover:opacity-100 transition-opacity"
             />
           </Link>
         </div>
         <div className="flex items-center justify-center mt-16">
-          <p className="text-lg text-gray-300">Cargando productos...</p>
+          <p className="text-lg text-muted">Cargando productos...</p>
         </div>
       </div>
     );
@@ -172,12 +172,12 @@ export function Marco({ title, metodo, discount = 0 }) {
             <img
               src={back}
               alt="back"
-              className="w-12 bg-white rounded-[50%] mt-4"
+              className="w-12 rounded-[50%] mt-4 opacity-70 hover:opacity-100 transition-opacity"
             />
           </Link>
         </div>
         <div className="flex items-center justify-center mt-16">
-          <p className="text-lg text-red-400">
+          <p className="text-lg text-danger">
             Error al cargar productos: {error}
           </p>
         </div>
@@ -192,7 +192,7 @@ export function Marco({ title, metodo, discount = 0 }) {
           <img
             src={back}
             alt="back"
-            className="w-12 bg-white rounded-[50%] mt-4"
+            className="w-12 rounded-[50%] mt-4 opacity-70 hover:opacity-100 transition-opacity"
           />
         </Link>
 
@@ -202,7 +202,7 @@ export function Marco({ title, metodo, discount = 0 }) {
           <div className="flex items-center gap-2">
             <input
               onChange={buscar}
-              className="text-black ring-2 w-40 p-2 rounded-sm"
+              className="text-white bg-dark-surface border border-dark-border ring-0 focus:ring-2 focus:ring-accent w-40 p-2 rounded-sm transition-colors"
               type="text"
               name="busqueda"
               placeholder="Busca un producto"
@@ -211,7 +211,7 @@ export function Marco({ title, metodo, discount = 0 }) {
 
             <button
               onClick={openAdd}
-              className="text-sm px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700 transition-colors whitespace-nowrap"
+              className="text-sm px-3 py-1 rounded bg-accent text-white hover:bg-accent/80 transition-colors whitespace-nowrap min-h-[44px]"
               type="button"
             >
               + Agregar
@@ -220,7 +220,7 @@ export function Marco({ title, metodo, discount = 0 }) {
         </div>
       </div>
 
-      <div className="flex flex-wrap mt-6 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-center">
+      <div className="flex flex-wrap mt-6 sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-center gap-4 px-2">
         {listado.length === 0 ? (
           <p className="text-white text-lg col-span-full text-center">
             No se encontraron productos
@@ -268,7 +268,7 @@ export function Marco({ title, metodo, discount = 0 }) {
       />
 
       {mutationError && (
-        <div className="fixed bottom-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg z-50">
+        <div className="fixed bottom-4 right-4 bg-danger text-white px-4 py-2 rounded-lg shadow-lg z-50">
           {mutationError}
           <button
             onClick={() => setMutationError(null)}

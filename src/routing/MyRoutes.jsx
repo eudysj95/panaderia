@@ -7,7 +7,7 @@ import { Produccion } from '../layout/Produccion';
 
 export const MyRoutes = () => {
   return (
-    <div className='w-full bg-slate-600 px-10 h-full flex justify-center items-center'>
+    <div className='w-full bg-dark-bg min-h-screen px-4 sm:px-10 flex justify-center items-center'>
         <BrowserRouter>
             <Routes>
                 <Route path='/' element={<Inicio/>}/>

@@ -38,7 +38,7 @@ export const PreciosMayor = () => {
   return (
     <div>
       <div className="flex justify-center mt-2 mb-0">
-        <div className="flex items-center gap-2 text-sm text-gray-300">
+        <div className="flex items-center gap-2 text-sm text-muted">
           <label htmlFor="mayor-discount">Descuento:</label>
           <input
             id="mayor-discount"
@@ -48,10 +48,10 @@ export const PreciosMayor = () => {
             step="1"
             value={discount}
             onChange={handleDiscountChange}
-            className="w-28 accent-green-500"
+            className="w-28 accent-accent"
             aria-label="Porcentaje de descuento al mayor"
           />
-          <span className="font-bold text-green-400 w-12 text-center">
+          <span className="font-bold text-accent w-12 text-center">
             {discount}%
           </span>
         </div>

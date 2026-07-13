@@ -4,21 +4,21 @@ export function ConfirmDialog({ isOpen, onClose, onConfirm, title, message }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white text-black rounded-lg p-6 max-w-sm w-full mx-4">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+      <div className="bg-dark-surface text-white rounded-lg p-6 max-w-sm w-full mx-4 border border-dark-border">
         <h2 className="text-xl font-bold mb-3">{title}</h2>
-        <p className="mb-6">{message}</p>
+        <p className="mb-6 text-muted">{message}</p>
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 transition-colors"
+            className="px-4 py-2 rounded-md bg-dark-border text-white hover:bg-dark-border/80 transition-colors min-h-[44px]"
             type="button"
           >
             Cancelar
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 transition-colors"
+            className="px-4 py-2 rounded-md bg-danger text-white hover:bg-danger/80 transition-colors min-h-[44px]"
             type="button"
           >
             Eliminar
