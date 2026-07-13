@@ -1,0 +1,5 @@
+Retomemos la configuración del backend para el proyecto panaderia. En nuestra sesión anterior, la ejecución se interrumpió por un límite de uso justo cuando ibas a lanzar el comando Sdd-Apply Task — Apply PR1 server backend.
+
+Tu última acción fue buscar en la memoria y confirmar que no había un apply-progress anterior. Tu plan era arrancar con el PR 1: Server (tareas 1.1 a 3.3) y me pediste que creara el clúster de MongoDB en Atlas.
+
+[OPCIONAL: Ya tengo el clúster de Atlas creado y la URI lista]. Por favor, actualiza tu memoria en sdd/mongodb-backend/apply-progress indicando que estamos iniciando el PR 1, y comienza con la implementación del código del servidor.

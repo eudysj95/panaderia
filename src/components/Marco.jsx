@@ -14,7 +14,6 @@ export function Marco({ title, metodo, discount = 0 }) {
     loading,
     error,
     exchangeRate,
-    updateExchangeRate,
     apiKey,
     setApiKey,
     ensureApiKey,
@@ -209,20 +208,6 @@ export function Marco({ title, metodo, discount = 0 }) {
               placeholder="Busca un producto"
               aria-label="Buscar productos"
             />
-
-            <div className="flex items-center gap-1 text-sm">
-              <span className="text-gray-300">Tasa:</span>
-              <input
-                type="number"
-                step="1"
-                min="1"
-                value={exchangeRate}
-                onChange={(e) => updateExchangeRate(e.target.value)}
-                className="w-20 text-black p-1 rounded-sm text-center"
-                aria-label="Tasa de cambio Bs/USD"
-              />
-              <span className="text-gray-300">Bs/USD</span>
-            </div>
 
             <button
               onClick={openAdd}
