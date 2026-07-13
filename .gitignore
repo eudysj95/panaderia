@@ -28,4 +28,5 @@ dist-ssr
 
 # Environment variables
 server/.env
+server/package-lock.json
 context.txt
