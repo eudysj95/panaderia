@@ -4,19 +4,20 @@ import { PrecioViveres } from '../layout/PrecioViveres';
 import { PrecioPanaderia } from '../layout/PrecioPanaderia';
 import { PreciosMayor } from '../layout/PreciosMayor';
 import { Produccion } from '../layout/Produccion';
+import { AppLayout } from '../components/AppLayout';
 
 export const MyRoutes = () => {
   return (
-    <div className='w-full bg-dark-bg min-h-screen px-4 sm:px-10 flex justify-center items-center'>
         <BrowserRouter>
-            <Routes>
-                <Route path='/' element={<Inicio/>}/>
-                <Route path='/viveres' element={<PrecioViveres/>}/>
-                <Route path='/panaderia' element={<PrecioPanaderia/>}/>
-                <Route path='/mayor' element={<PreciosMayor/>}/>
-                <Route path='/produccion' element={<Produccion/>}/>
-            </Routes>
+            <AppLayout>
+                <Routes>
+                    <Route path='/' element={<Inicio/>}/>
+                    <Route path='/viveres' element={<PrecioViveres/>}/>
+                    <Route path='/panaderia' element={<PrecioPanaderia/>}/>
+                    <Route path='/mayor' element={<PreciosMayor/>}/>
+                    <Route path='/produccion' element={<Produccion/>}/>
+                </Routes>
+            </AppLayout>
         </BrowserRouter>
-    </div>
   )
 }
