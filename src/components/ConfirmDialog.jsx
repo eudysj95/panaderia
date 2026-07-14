@@ -1,31 +1,27 @@
 import PropTypes from "prop-types";
+import { BottomSheet } from "./BottomSheet";
 
 export function ConfirmDialog({ isOpen, onClose, onConfirm, title, message }) {
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-      <div className="bg-dark-surface text-white rounded-lg p-6 max-w-sm w-full mx-4 border border-dark-border">
-        <h2 className="text-xl font-bold mb-3">{title}</h2>
-        <p className="mb-6 text-muted">{message}</p>
-        <div className="flex justify-end gap-3">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 rounded-md bg-dark-border text-white hover:bg-dark-border/80 transition-colors min-h-[44px]"
-            type="button"
-          >
-            Cancelar
-          </button>
-          <button
-            onClick={onConfirm}
-            className="px-4 py-2 rounded-md bg-danger text-white hover:bg-danger/80 transition-colors min-h-[44px]"
-            type="button"
-          >
-            Eliminar
-          </button>
-        </div>
+    <BottomSheet isOpen={isOpen} onClose={onClose} title={title}>
+      <p className="mb-6 text-[var(--color-text-secondary)] text-center">{message}</p>
+      <div className="flex justify-end gap-3">
+        <button
+          onClick={onClose}
+          className="px-4 py-2 rounded-xl bg-[var(--color-surface-alt)] text-[var(--color-text-primary)] border border-[var(--color-border)] hover:bg-[var(--color-border)] transition-colors min-h-[44px] font-medium"
+          type="button"
+        >
+          Cancelar
+        </button>
+        <button
+          onClick={onConfirm}
+          className="px-4 py-2 rounded-xl bg-[var(--color-error)] text-white hover:bg-[var(--color-error)]/90 transition-colors min-h-[44px] font-semibold"
+          type="button"
+        >
+          Eliminar
+        </button>
       </div>
-    </div>
+    </BottomSheet>
   );
 }
 
