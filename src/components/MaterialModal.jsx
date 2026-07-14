@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { BottomSheet } from "./BottomSheet";
 
 export function MaterialModal({ isOpen, onClose, onSave, initialData }) {
   const [nombre, setNombre] = useState("");
@@ -17,8 +18,6 @@ export function MaterialModal({ isOpen, onClose, onSave, initialData }) {
     }
   }, [initialData, isOpen]);
 
-  if (!isOpen) return null;
-
   const handleSubmit = (e) => {
     e.preventDefault();
     onSave({
@@ -28,54 +27,55 @@ export function MaterialModal({ isOpen, onClose, onSave, initialData }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-      <div className="bg-dark-surface text-white rounded-lg p-6 max-w-md w-full mx-4 border border-dark-border">
-        <h2 className="text-xl font-bold mb-4">
-          {initialData ? "Editar Material" : "Agregar Material"}
-        </h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="block text-sm font-medium mb-1 text-muted">Nombre</label>
-            <input
-              type="text"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-              required
-              className="w-full border border-dark-border bg-dark-bg text-white rounded-md p-2 focus:outline-none focus:border-accent transition-colors"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1 text-muted">
-              Precio (USD/kg)
-            </label>
-            <input
-              type="number"
-              step="0.001"
-              min="0"
-              value={precio}
-              onChange={(e) => setPrecio(e.target.value)}
-              required
-              className="w-full border border-dark-border bg-dark-bg text-white rounded-md p-2 focus:outline-none focus:border-accent transition-colors"
-            />
-          </div>
-          <div className="flex justify-end gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 rounded-md bg-dark-border text-white hover:bg-dark-border/80 transition-colors min-h-[44px]"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 rounded-md bg-accent text-white hover:bg-accent/80 transition-colors min-h-[44px]"
-            >
-              {initialData ? "Guardar" : "Agregar"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+    <BottomSheet
+      isOpen={isOpen}
+      onClose={onClose}
+      title={initialData ? "Editar Material" : "Agregar Material"}
+    >
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label className="block text-sm font-medium mb-1 text-[var(--color-text-secondary)]">
+            Nombre
+          </label>
+          <input
+            type="text"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+            required
+            className="w-full border border-[var(--color-border)] bg-[var(--color-surface-alt)] text-[var(--color-text-primary)] rounded-xl p-3 focus:outline-none focus:border-[var(--color-primary)] transition-colors"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1 text-[var(--color-text-secondary)]">
+            Precio (USD/kg)
+          </label>
+          <input
+            type="number"
+            step="0.001"
+            min="0"
+            value={precio}
+            onChange={(e) => setPrecio(e.target.value)}
+            required
+            className="w-full border border-[var(--color-border)] bg-[var(--color-surface-alt)] text-[var(--color-text-primary)] rounded-xl p-3 focus:outline-none focus:border-[var(--color-primary)] transition-colors"
+          />
+        </div>
+        <div className="flex justify-end gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 rounded-xl bg-[var(--color-surface-alt)] text-[var(--color-text-primary)] border border-[var(--color-border)] hover:bg-[var(--color-border)] transition-colors min-h-[44px] font-medium"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 rounded-xl bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-light)] transition-colors min-h-[44px] font-semibold"
+          >
+            {initialData ? "Guardar" : "Agregar"}
+          </button>
+        </div>
+      </form>
+    </BottomSheet>
   );
 }
 
