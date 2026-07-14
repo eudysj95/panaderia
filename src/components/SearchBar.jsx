@@ -13,7 +13,7 @@ export function SearchBar({ value, onChange, placeholder = "Buscar..." }) {
     <input
       onChange={(e) => onChange(e.target.value)}
       value={value}
-      className="text-[var(--color-text-primary)] bg-[var(--color-surface-alt)] border border-[var(--color-border)] ring-0 focus:ring-2 focus:ring-[var(--color-primary)] w-40 p-2 rounded-xl transition-colors"
+      className="text-[var(--color-text-primary)] bg-[var(--color-surface-alt)] border border-[var(--color-border)] ring-0 focus:ring-2 focus:ring-[var(--color-primary)] w-40 px-3 py-2 rounded-xl transition-colors min-h-[44px]"
       type="text"
       name="busqueda"
       placeholder={placeholder}
