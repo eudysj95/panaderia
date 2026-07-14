@@ -7,6 +7,7 @@ import { ProductGrid } from "./ProductGrid";
 import { ProductModal } from "./ProductModal";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { SkeletonLoader } from "./SkeletonLoader";
+import { Toast } from "./Toast";
 
 /**
  * Replaces Marco.jsx — composes SearchBar, ProductGrid, ProductModal, ConfirmDialog,
@@ -137,16 +138,7 @@ export function ProductList({ title, metodo, discount = 0 }) {
 
       {/* Error Toast */}
       {mutationError && (
-        <div className="fixed bottom-4 right-4 bg-[var(--color-error)] text-white px-4 py-2 rounded-lg shadow-lg z-50">
-          {mutationError}
-          <button
-            onClick={clearError}
-            className="ml-3 text-white font-bold"
-            type="button"
-          >
-            ✕
-          </button>
-        </div>
+        <Toast message={mutationError} type="error" onDismiss={clearError} />
       )}
 
       {/* Delete Confirmation */}

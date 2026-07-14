@@ -5,6 +5,7 @@ import { MaterialModal } from "../components/MaterialModal";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { SkeletonLoader } from "../components/SkeletonLoader";
 import { EmptyState } from "../components/EmptyState";
+import { Toast } from "../components/Toast";
 
 export const Produccion = () => {
   const {
@@ -220,16 +221,7 @@ export const Produccion = () => {
 
       {/* Error Toast */}
       {mutationError && (
-        <div className="fixed bottom-4 right-4 bg-[var(--color-error)] text-white px-4 py-2 rounded-lg shadow-lg z-50">
-          {mutationError}
-          <button
-            onClick={clearError}
-            className="ml-3 text-white font-bold"
-            type="button"
-          >
-            ✕
-          </button>
-        </div>
+        <Toast message={mutationError} type="error" onDismiss={clearError} />
       )}
 
       {/* Delete Confirmation */}
