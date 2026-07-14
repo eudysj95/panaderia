@@ -1,9 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body{
-    font-family: "Inter", sans-serif;
+:root {
+  --color-primary: #E97A2B;
+  --color-primary-light: #F4A261;
+  --color-secondary: #F2CC8F;
+  --color-accent: #E76F51;
+  --color-bg: #FFF8F0;
+  --color-surface: #FFFFFF;
+  --color-surface-alt: #FEF3E2;
+  --color-border: #E8DDD0;
+  --color-text-primary: #3D2C1E;
+  --color-text-secondary: #8B7355;
+  --color-text-disabled: #C4B6A6;
+  --color-success: #4CAF50;
+  --color-error: #E74C3C;
+  --color-warning: #FF9800;
+  --color-info: #5DADE2;
+}
+
+body {
+  font-family: "Nunito", sans-serif;
   font-weight: 400;
   font-style: normal;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #FEF3E2 25%, #F2CC8F 50%, #FEF3E2 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
 }
