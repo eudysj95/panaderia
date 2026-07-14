@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Marco } from "../components/Marco";
+import { ProductList } from "../components/ProductList";
 
 const DISCOUNT_STORAGE_KEY = "mayorDiscount";
 const DEFAULT_DISCOUNT = 15;
@@ -38,7 +38,7 @@ export const PreciosMayor = () => {
   return (
     <div>
       <div className="flex justify-center mt-2 mb-0">
-        <div className="flex items-center gap-2 text-sm text-muted">
+        <div className="flex items-center gap-2 text-sm text-[var(--color-text-secondary)]">
           <label htmlFor="mayor-discount">Descuento:</label>
           <input
             id="mayor-discount"
@@ -48,15 +48,15 @@ export const PreciosMayor = () => {
             step="1"
             value={discount}
             onChange={handleDiscountChange}
-            className="w-28 accent-accent"
+            className="w-28 accent-[var(--color-accent)]"
             aria-label="Porcentaje de descuento al mayor"
           />
-          <span className="font-bold text-accent w-12 text-center">
+          <span className="font-bold text-[var(--color-accent)] w-12 text-center">
             {discount}%
           </span>
         </div>
       </div>
-      <Marco title="Precios al Mayor" metodo="mayor" discount={discount} />
+      <ProductList title="Precios al Mayor" metodo="mayor" discount={discount} />
     </div>
   );
 };
