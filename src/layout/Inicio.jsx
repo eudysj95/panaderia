@@ -17,8 +17,8 @@ export const Inicio = () => {
           <input
             type="number"
             step="1"
-            min="1"
-            value={exchangeRate}
+            min="0"
+            value={exchangeRate || ""}
             onChange={(e) => updateExchangeRate(e.target.value)}
             className="w-20 text-center bg-white/30 rounded px-2 py-1 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 transition-colors min-h-[44px]"
             aria-label="Tasa de cambio Bs/USD"

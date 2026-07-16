@@ -151,8 +151,14 @@ export function ListadoProvider({ children }) {
   }, [doFetch]);
 
   const updateExchangeRate = (rate) => {
+    // Allow empty string while typing — don't update state yet
+    if (rate === "") {
+      setExchangeRate(0);
+      return;
+    }
+
     const value = parseFloat(rate);
-    if (isNaN(value) || value <= 0) return;
+    if (isNaN(value) || value < 0) return;
 
     // Optimistic local update
     setExchangeRate(value);
@@ -162,14 +168,16 @@ export function ListadoProvider({ children }) {
       // localStorage unavailable
     }
 
-    // Best-effort server sync (may fail if no API key — that's OK)
-    fetch(`${API_BASE_URL}/config/exchange-rate`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ rate: value }),
-    }).catch(() => {
-      // Silent fail — local update still applies
-    });
+    // Best-effort server sync (only for valid positive values)
+    if (value > 0) {
+      fetch(`${API_BASE_URL}/config/exchange-rate`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rate: value }),
+      }).catch(() => {
+        // Silent fail — local update still applies
+      });
+    }
   };
 
   return (

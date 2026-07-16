@@ -15,9 +15,9 @@ export function BottomSheet({ isOpen, onClose, title, children, className = "" }
 
   return (
     <div className="fixed inset-0 z-50" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/50" />
+      <div className="absolute inset-0 bg-black/50 overlay-animate" />
       <div
-        className={`absolute bottom-0 inset-x-0 bg-[var(--color-surface)] rounded-t-2xl p-6 pb-8 max-h-[85vh] overflow-y-auto transition-transform z-50 ${className}`}
+        className={`absolute bottom-0 inset-x-0 bg-[var(--color-surface)] rounded-t-2xl p-6 pb-8 max-h-[85vh] overflow-y-auto bottom-sheet-animate z-50 ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Drag handle */}

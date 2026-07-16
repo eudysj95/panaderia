@@ -43,3 +43,29 @@ body {
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.bottom-sheet-animate {
+  animation: slide-up 0.3s ease-out;
+}
+
+.overlay-animate {
+  animation: fade-in 0.2s ease-out;
+}
